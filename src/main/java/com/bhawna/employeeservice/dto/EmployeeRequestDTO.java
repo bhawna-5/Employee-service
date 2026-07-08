@@ -19,7 +19,10 @@ public class EmployeeRequestDTO {
         this.salary = salary;
         this.joiningDate = joiningDate;
     }
-    public EmployeeRequestDTO(){}
+
+    public EmployeeRequestDTO() {
+    }
+
     @NotBlank
     private String firstName;
 

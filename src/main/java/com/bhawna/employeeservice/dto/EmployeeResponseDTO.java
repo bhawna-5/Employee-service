@@ -22,9 +22,11 @@ public class EmployeeResponseDTO {
         this.salary = salary;
         this.joiningDate = joiningDate;
     }
-    public EmployeeResponseDTO(){
+
+    public EmployeeResponseDTO() {
 
     }
+
     @NotBlank
     private Long id;
     @NotBlank
