@@ -4,12 +4,14 @@ import com.bhawna.employeeservice.dto.EmployeeRequestDTO;
 import com.bhawna.employeeservice.dto.EmployeeResponseDTO;
 import com.bhawna.employeeservice.entity.Employee;
 import com.bhawna.employeeservice.enums.EmployeeStatus;
+import com.bhawna.employeeservice.exception.ResourceNotFoundException;
 import com.bhawna.employeeservice.repository.EmployeeRepository;
 import com.bhawna.employeeservice.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -50,7 +52,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeResponseDTO getEmployeeById(Long id) {
-        return null;
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Employee not found with id: " + id));
+        EmployeeResponseDTO response = new EmployeeResponseDTO();
+        response.setId(employee.getId());
+        response.setFirstName(employee.getFirstName());
+        response.setLastName(employee.getLastName());
+        response.setEmail(employee.getEmail());
+        response.setPhone(employee.getPhone());
+        response.setDepartment(employee.getDepartment());
+        response.setDesignation(employee.getDesignation());
+        response.setSalary(employee.getSalary());
+        response.setJoiningDate(employee.getJoiningDate());
+        response.setStatus(employee.getStatus());
+        return response;
     }
 
     @Override
