@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
@@ -20,7 +22,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/create")
-    public ApiResponse<EmployeeResponseDTO> createEmployee(@Valid @RequestBody EmployeeRequestDTO employeeRequestDTO) {
+    public ApiResponse<EmployeeResponseDTO> createEmployee( @RequestBody EmployeeRequestDTO employeeRequestDTO) {
         return new ApiResponse<>(true, "Employee created successfully", employeeService.createEmployee(employeeRequestDTO));
     }
 
@@ -28,4 +30,21 @@ public class EmployeeController {
     public ApiResponse<EmployeeResponseDTO> getEmployeeById(@PathVariable Long id) {
         return new ApiResponse<>(true,"",employeeService.getEmployeeById(id));
     }
+
+    @GetMapping("")
+    public ApiResponse<List<EmployeeResponseDTO>> getEmployees(){
+        return new ApiResponse<>(true,"employees fetched successfully",employeeService.getAllEmployees());
+    }
+
+    @PutMapping("/{id}")
+    public ApiResponse<EmployeeResponseDTO> updateEmployee(@PathVariable Long id ,@RequestBody EmployeeRequestDTO employeeRequestDTO){
+        return new ApiResponse<>(true,"updated successfully",employeeService.updateEmployee(id , employeeRequestDTO));
+    }
+
+    @DeleteMapping("{id}")
+    public ApiResponse<Void> deleteEmployee (@PathVariable Long id){
+        employeeService.deleteEmployee(id);
+
+        return new ApiResponse<>(true, "Employee deleted successfully", null);    }
+
 }

@@ -10,6 +10,7 @@ import com.bhawna.employeeservice.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,16 +72,74 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeResponseDTO> getAllEmployees() {
-        return List.of();
+        List<Employee> employees = employeeRepository.findAll();
+        List<EmployeeResponseDTO> response = new ArrayList<>();
+        for (Employee employee : employees) {
+
+            EmployeeResponseDTO dto = new EmployeeResponseDTO();
+
+            dto.setId(employee.getId());
+            dto.setFirstName(employee.getFirstName());
+            dto.setLastName(employee.getLastName());
+            dto.setEmail(employee.getEmail());
+            dto.setPhone(employee.getPhone());
+            dto.setDepartment(employee.getDepartment());
+            dto.setDesignation(employee.getDesignation());
+            dto.setSalary(employee.getSalary());
+            dto.setJoiningDate(employee.getJoiningDate());
+            dto.setStatus(employee.getStatus());
+
+            response.add(dto);
+        }
+
+        return response;
     }
 
     @Override
     public EmployeeResponseDTO updateEmployee(Long id, EmployeeRequestDTO employeeRequestDTO) {
-        return null;
+
+        // Find employee by id
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Employee not found with id: " + id));
+
+        // Update employee details
+        existingEmployee.setFirstName(employeeRequestDTO.getFirstName());
+        existingEmployee.setLastName(employeeRequestDTO.getLastName());
+        existingEmployee.setEmail(employeeRequestDTO.getEmail());
+        existingEmployee.setDepartment(employeeRequestDTO.getDepartment());
+        existingEmployee.setDesignation(employeeRequestDTO.getDesignation());
+        existingEmployee.setSalary(employeeRequestDTO.getSalary());
+        existingEmployee.setPhone(employeeRequestDTO.getPhone());
+        existingEmployee.setJoiningDate(employeeRequestDTO.getJoiningDate());
+
+        // Save updated employee
+        Employee updatedEmployee = employeeRepository.save(existingEmployee);
+
+        // Convert Entity -> DTO
+        EmployeeResponseDTO employeeResponseDTO = new EmployeeResponseDTO();
+
+        employeeResponseDTO.setId(updatedEmployee.getId());
+        employeeResponseDTO.setFirstName(updatedEmployee.getFirstName());
+        employeeResponseDTO.setLastName(updatedEmployee.getLastName());
+        employeeResponseDTO.setEmail(updatedEmployee.getEmail());
+        employeeResponseDTO.setPhone(updatedEmployee.getPhone());
+        employeeResponseDTO.setDepartment(updatedEmployee.getDepartment());
+        employeeResponseDTO.setDesignation(updatedEmployee.getDesignation());
+        employeeResponseDTO.setSalary(updatedEmployee.getSalary());
+        employeeResponseDTO.setJoiningDate(updatedEmployee.getJoiningDate());
+        employeeResponseDTO.setStatus(updatedEmployee.getStatus());
+
+        return employeeResponseDTO;
     }
 
     @Override
     public void deleteEmployee(Long id) {
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Employee not found with id: " + id));
+        existingEmployee.setStatus(EmployeeStatus.INACTIVE);
+        employeeRepository.save(existingEmployee);
 
     }
 }
